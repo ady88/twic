@@ -9,5 +9,4 @@ public class TwicApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(TwicApplication.class, args);
 	}
-
 }
