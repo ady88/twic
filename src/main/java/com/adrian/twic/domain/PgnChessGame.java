@@ -33,6 +33,11 @@ public class PgnChessGame {
 		this.chessMovesRaw = chessMovesRaw;
 	}
 
+	@Override
+	public String toString() {
+		return "PgnChessGame [metadata=" + metadata + ", chessMovesRaw=" + chessMovesRaw + "]";
+	}
+
 	/**
 	 * Creates builder to build {@link PgnChessGame}.
 	 * 

@@ -17,6 +17,8 @@ public class TwicConstants {
 	public static final int PGN_DOWNLOAD_FAIL_BREAKER = 5;
 
 	public static final String DEFAULT_CHARSET = "UTF-8";
+	
+	public static final String EMPTY_STRING = "";
 
 	// Status codes ------------------------------------------
 	public static final int SUCCESS_CODE = 200;

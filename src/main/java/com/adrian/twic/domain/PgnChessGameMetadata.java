@@ -6,7 +6,7 @@ import com.adrian.twic.enums.ChessMetadataType;
  * Holds all pgn information regarding a chess game metadata.
  */
 public class PgnChessGameMetadata {
-	private PgnChessGameId chessGameId;
+	private PgnChessGameId chessGameId = new PgnChessGameId();
 
 	private String result;
 
@@ -30,6 +30,14 @@ public class PgnChessGameMetadata {
 
 	// format yyyy.mm.dd
 	private String eventDate;
+
+	public PgnChessGameId getChessGameId() {
+		return chessGameId;
+	}
+
+	public void setChessGameId(PgnChessGameId chessGameId) {
+		this.chessGameId = chessGameId;
+	}
 
 	public String getResult() {
 		return result;
@@ -121,6 +129,7 @@ public class PgnChessGameMetadata {
 
 	public void setField(final String fieldName, final String fieldValue) {
 		final ChessMetadataType metadataType = ChessMetadataType.fromString(fieldName);
+
 		switch (metadataType) {
 		case BLACK:
 			this.chessGameId.setBlackPlayerName(fieldValue);
@@ -270,4 +279,13 @@ public class PgnChessGameMetadata {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "PgnChessGameMetadata [chessGameId=" + chessGameId + ", result=" + result + ", whiteTitle=" + whiteTitle
+				+ ", blackTitle=" + blackTitle + ", whiteElo=" + whiteElo + ", blackElo=" + blackElo + ", ECO=" + ECO
+				+ ", opening=" + opening + ", variation=" + variation + ", whiteFideId=" + whiteFideId
+				+ ", blackFideId=" + blackFideId + ", eventDate=" + eventDate + "]";
+	}
+
 }

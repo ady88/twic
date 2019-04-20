@@ -118,4 +118,12 @@ public class PgnChessGameId {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "PgnChessGameId [eventName=" + eventName + ", eventLocation=" + eventLocation + ", date=" + date
+				+ ", round=" + round + ", whitePlayerName=" + whitePlayerName + ", blackPlayerName=" + blackPlayerName
+				+ "]";
+	}
+
 }
