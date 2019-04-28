@@ -1,0 +1,5 @@
+FROM openjdk:11
+COPY ./target/twic.jar /usr/app/
+WORKDIR /usr/app
+RUN sh -c 'touch twic.jar'
+ENTRYPOINT ["java","-jar","twic.jar","--spring.profiles.active=prod"]

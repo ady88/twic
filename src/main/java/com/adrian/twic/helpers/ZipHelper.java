@@ -17,8 +17,7 @@ public class ZipHelper {
 		var destDir = new File(dirName);
 
 		if (!destDir.exists()) {
-			boolean result = destDir.mkdirs();
-			System.out.println(result);
+			destDir.mkdirs();
 		}
 
 		try (final var zipIn = new ZipInputStream(new ByteArrayInputStream(data))) {

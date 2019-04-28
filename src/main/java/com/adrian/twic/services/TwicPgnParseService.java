@@ -1,17 +1,14 @@
 package com.adrian.twic.services;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.adrian.twic.constants.TwicConstants;
@@ -24,6 +21,9 @@ import com.adrian.twic.helpers.PGNMetadataParseHelper;
 @Service
 public final class TwicPgnParseService {
 
+	@Value("${twic.files.basePath}")
+	private String basePath;
+
 	/**
 	 * Parse the pgn file with the given number.
 	 * 
@@ -32,23 +32,21 @@ public final class TwicPgnParseService {
 	 *         {@link PgnChessGame} objects if the parsing was successful
 	 */
 	public ParseOperationResult parsePgnFile(final int pgnFileNumber) {
-		final var basePath = URLDecoder.decode(this.getClass().getClassLoader().getResource(".").getFile(),
-				Charset.forName(TwicConstants.DEFAULT_CHARSET));
 
-		final var fullPath = FilenameUtils.concat(basePath, TwicConstants.PGN_FOLDER_NAME);
-
-		String pgnFileFullPath = FilenameUtils.concat(fullPath,
-				String.format(TwicConstants.PGN_FILE_NAME, pgnFileNumber));
+		final var pgnFolderPath = basePath + TwicConstants.PGN_FOLDER_NAME;
+		final var path = FilenameUtils.concat(pgnFolderPath, String.format(TwicConstants.PGN_FILE_NAME, pgnFileNumber));
 
 		final List<PgnChessGame> result = new ArrayList<PgnChessGame>();
+
+		if (!Files.exists(Paths.get(path))) {
+			return ParseOperationResult.of(TwicConstants.PARSE_FAIL_NO_FILE_CODE,
+					String.format(TwicConstants.PARSE_FAIL_NO_FILE_MESSAGE, pgnFileNumber), OperationType.PARSE_PGN,
+					null);
+		}
+
 		try {
-			Path path = Paths.get(pgnFileFullPath);
-
-			try (Stream<String> lines = Files.lines(path)) {
-				List<String> tempLines = lines.collect(Collectors.toList());
-				result.addAll(getSeparateGames(tempLines));
-			}
-
+			List<String> tempLines = Files.lines(Paths.get(path)).collect(Collectors.toList());
+			result.addAll(getSeparateGames(tempLines));
 		} catch (IOException e) {
 			return ParseOperationResult.of(TwicConstants.PARSE_FAIL_CODE,
 					String.format(TwicConstants.PARSE_FAIL_MESSAGE, pgnFileNumber), OperationType.PARSE_PGN, null);

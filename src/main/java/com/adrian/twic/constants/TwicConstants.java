@@ -17,7 +17,7 @@ public class TwicConstants {
 	public static final int PGN_DOWNLOAD_FAIL_BREAKER = 5;
 
 	public static final String DEFAULT_CHARSET = "UTF-8";
-	
+
 	public static final String EMPTY_STRING = "";
 
 	// Status codes ------------------------------------------
@@ -25,7 +25,8 @@ public class TwicConstants {
 	public static final int PGN_EXISTS_CODE = 201;
 	public static final int DOWNLOAD_FAIL_CODE = 300;
 	public static final int UNZIP_FAIL_CODE = 301;
-	public static final int PARSE_FAIL_CODE = 301;
+	public static final int PARSE_FAIL_CODE = 302;
+	public static final int PARSE_FAIL_NO_FILE_CODE = 303;
 
 	// Status messages ------------------------------------------
 	public static final String SUCCESS_MESSAGE = "OK.";
@@ -33,5 +34,6 @@ public class TwicConstants {
 	public static final String DOWNLOAD_FAIL_MESSAGE = "Download failed for pgn file number %s.";
 	public static final String UNZIP_FAIL_MESSAGE = "Unzip failed for pgn file number %s.";
 	public static final String PARSE_FAIL_MESSAGE = "Parse failed for pgn file number %s.";
+	public static final String PARSE_FAIL_NO_FILE_MESSAGE = "Parse failed for pgn file number %s,because the pgn file to parse does not exist.";
 
 }

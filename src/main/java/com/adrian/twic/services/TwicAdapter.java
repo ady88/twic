@@ -23,8 +23,6 @@ public final class TwicAdapter {
 	 * @throws IOException
 	 */
 	public byte[] getTwicResponseForFile(final int pgnFileNumber) throws IOException {
-		// before downloading check if the file already exists...
-
 		final var twicPgnDownloader = new RestTemplate();
 		byte[] downloadedBytes = null;
 		downloadedBytes = twicPgnDownloader.getForObject(String.format(TwicConstants.PGN_ZIP_BASE_URL, pgnFileNumber),

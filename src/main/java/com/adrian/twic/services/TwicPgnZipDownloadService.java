@@ -1,8 +1,6 @@
 package com.adrian.twic.services;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
@@ -10,6 +8,7 @@ import java.util.logging.Logger;
 import javax.inject.Inject;
 
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
@@ -27,6 +26,9 @@ public final class TwicPgnZipDownloadService {
 
 	private static final Logger LOG = Logger.getLogger(TwicPgnZipDownloadService.class.getName());
 
+	@Value("${twic.files.basePath}")
+	private String basePath;
+
 	@Inject
 	private TwicAdapter twicAdapter;
 
@@ -38,20 +40,12 @@ public final class TwicPgnZipDownloadService {
 	 */
 	public OperationStatus downloadTwic(final int pgnFileNumber) {
 		byte[] downloadedBytes;
-		final var downloadFailStatus = OperationStatus.of(TwicConstants.DOWNLOAD_FAIL_CODE,
-				String.format(TwicConstants.DOWNLOAD_FAIL_MESSAGE, pgnFileNumber),
-				OperationType.DOWNLOAD_AND_EXTRACT_ZIP_PGN);
 
-		final var basePath = URLDecoder.decode(this.getClass().getClassLoader().getResource(".").getFile(),
-				Charset.forName(TwicConstants.DEFAULT_CHARSET));
+		final var pgnFolderPath = basePath + TwicConstants.PGN_FOLDER_NAME;
+		final var path = FilenameUtils.concat(pgnFolderPath, String.format(TwicConstants.PGN_FILE_NAME, pgnFileNumber));
 
-		final var fullPath = FilenameUtils.concat(basePath, TwicConstants.PGN_FOLDER_NAME);
-
-		String pgnFileFullPath = FilenameUtils.concat(fullPath,
-				String.format(TwicConstants.PGN_FILE_NAME, pgnFileNumber));
-
-		if (Files.exists(Paths.get(pgnFileFullPath))) {
-			final OperationStatus fileExistsStatus = OperationStatus.of(TwicConstants.PGN_EXISTS_CODE,
+		if (Files.exists(Paths.get(path))) {
+			final var fileExistsStatus = OperationStatus.of(TwicConstants.PGN_EXISTS_CODE,
 					String.format(TwicConstants.PGN_EXISTS_MESSAGE, pgnFileNumber),
 					OperationType.DOWNLOAD_AND_EXTRACT_ZIP_PGN);
 			return fileExistsStatus;
@@ -60,11 +54,14 @@ public final class TwicPgnZipDownloadService {
 		try {
 			downloadedBytes = twicAdapter.getTwicResponseForFile(pgnFileNumber);
 		} catch (IOException | RestClientException e) {
+			final var downloadFailStatus = OperationStatus.of(TwicConstants.DOWNLOAD_FAIL_CODE,
+					String.format(TwicConstants.DOWNLOAD_FAIL_MESSAGE, pgnFileNumber),
+					OperationType.DOWNLOAD_AND_EXTRACT_ZIP_PGN);
 			return downloadFailStatus;
 		}
 
 		try {
-			ZipHelper.unzip(downloadedBytes, fullPath);
+			ZipHelper.unzip(downloadedBytes, pgnFolderPath);
 		} catch (IOException e) {
 			return OperationStatus.of(TwicConstants.UNZIP_FAIL_CODE,
 					String.format(TwicConstants.UNZIP_FAIL_MESSAGE, pgnFileNumber),
