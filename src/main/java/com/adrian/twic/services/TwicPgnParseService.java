@@ -36,13 +36,13 @@ public final class TwicPgnParseService {
 		final var pgnFolderPath = basePath + TwicConstants.PGN_FOLDER_NAME;
 		final var path = FilenameUtils.concat(pgnFolderPath, String.format(TwicConstants.PGN_FILE_NAME, pgnFileNumber));
 
-		final List<PgnChessGame> result = new ArrayList<PgnChessGame>();
-
 		if (!Files.exists(Paths.get(path))) {
 			return ParseOperationResult.of(TwicConstants.PARSE_FAIL_NO_FILE_CODE,
 					String.format(TwicConstants.PARSE_FAIL_NO_FILE_MESSAGE, pgnFileNumber), OperationType.PARSE_PGN,
 					null);
 		}
+
+		final List<PgnChessGame> result = new ArrayList<PgnChessGame>();
 
 		try {
 			List<String> tempLines = Files.lines(Paths.get(path)).collect(Collectors.toList());
@@ -53,7 +53,7 @@ public final class TwicPgnParseService {
 		}
 
 		return ParseOperationResult.of(TwicConstants.SUCCESS_CODE,
-				String.format(TwicConstants.SUCCESS_MESSAGE, pgnFileNumber), OperationType.PARSE_PGN, null);
+				String.format(TwicConstants.SUCCESS_MESSAGE, pgnFileNumber), OperationType.PARSE_PGN, result);
 	}
 
 	private List<PgnChessGame> getSeparateGames(final List<String> lines) {
@@ -82,6 +82,7 @@ public final class TwicPgnParseService {
 					metadata = new PgnChessGameMetadata();
 				} else {
 					game += line;
+					game += " ";
 				}
 			}
 		}

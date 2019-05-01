@@ -8,7 +8,7 @@ import com.adrian.twic.enums.OperationType;
  * Holds all of the pgn parsed chess game information and the status message of
  * the parsing operation.
  */
-public class ParseOperationResult extends OperationStatus {
+public final class ParseOperationResult extends OperationStatus {
 	private List<PgnChessGame> chessGames;
 
 	private ParseOperationResult(final int code, final String text, final OperationType operationType,

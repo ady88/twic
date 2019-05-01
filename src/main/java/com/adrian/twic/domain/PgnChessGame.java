@@ -35,7 +35,7 @@ public class PgnChessGame {
 
 	@Override
 	public String toString() {
-		return "PgnChessGame [metadata=" + metadata + ", chessMovesRaw=" + chessMovesRaw + "]";
+		return metadata + chessMovesRaw;
 	}
 
 	/**

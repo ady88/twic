@@ -9,7 +9,7 @@ import javax.ws.rs.core.Response;
 
 import org.springframework.stereotype.Service;
 
-import com.adrian.twic.services.TwicPgnParseService;
+import com.adrian.twic.services.TwicPgnEsService;
 import com.adrian.twic.services.TwicPgnZipDownloadService;
 
 /**
@@ -23,7 +23,7 @@ public class TwicRest {
 	public TwicPgnZipDownloadService pgnDownloader;
 
 	@Inject
-	public TwicPgnParseService pgnParser;
+	public TwicPgnEsService esService;
 
 	@GET
 	@Path("download")
@@ -45,10 +45,10 @@ public class TwicRest {
 	}
 
 	@GET
-	@Path("parse/{pgnFileNumber}")
+	@Path("index/{pgnFileNumber}")
 	@Produces("text/plain")
 	public Response parsePgn(@PathParam("pgnFileNumber") final int pgnFileNumber) {
-		var status = pgnParser.parsePgnFile(pgnFileNumber);
+		var status = esService.savePgnGamesFromPgnTwicFile(pgnFileNumber);
 
 		return Response.ok(status.toString()).build();
 	}

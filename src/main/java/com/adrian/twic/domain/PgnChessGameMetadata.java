@@ -282,10 +282,10 @@ public class PgnChessGameMetadata {
 
 	@Override
 	public String toString() {
-		return "PgnChessGameMetadata [chessGameId=" + chessGameId + ", result=" + result + ", whiteTitle=" + whiteTitle
-				+ ", blackTitle=" + blackTitle + ", whiteElo=" + whiteElo + ", blackElo=" + blackElo + ", ECO=" + ECO
-				+ ", opening=" + opening + ", variation=" + variation + ", whiteFideId=" + whiteFideId
-				+ ", blackFideId=" + blackFideId + ", eventDate=" + eventDate + "]";
+		return chessGameId + "[Result \"" + result + "\"]\n[WhiteTitle \"" + whiteTitle + "\"]\n[BlackTitle \""
+				+ blackTitle + "\"]\n[WhiteElo \"" + whiteElo + "\"]\n[BlackElo \"" + blackElo + "\"]\n[ECO \"" + ECO
+				+ "\"]\n[Opening \"" + opening + "\"]\n[Variation \"" + variation + "\"]\n[WhiteFideId \"" + whiteFideId
+				+ "\"]\n[BlackFideId \"" + blackFideId + "\"]\n[EventDate \"" + eventDate + "\"]\n";
 	}
 
 }

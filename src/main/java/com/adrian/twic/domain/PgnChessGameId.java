@@ -121,9 +121,8 @@ public class PgnChessGameId {
 
 	@Override
 	public String toString() {
-		return "PgnChessGameId [eventName=" + eventName + ", eventLocation=" + eventLocation + ", date=" + date
-				+ ", round=" + round + ", whitePlayerName=" + whitePlayerName + ", blackPlayerName=" + blackPlayerName
-				+ "]";
+		return "[Event \"" + eventName + "\"]\n[Site \"" + eventLocation + "\"]\n[Date \"" + date + "\"]\n[Round \""
+				+ round + "\"]\n[White \"" + whitePlayerName + "\"]\n[Black \"" + blackPlayerName + "\"]\n";
 	}
 
 }

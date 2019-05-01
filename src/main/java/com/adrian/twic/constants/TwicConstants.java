@@ -20,6 +20,8 @@ public class TwicConstants {
 
 	public static final String EMPTY_STRING = "";
 
+	public static final String TWIC_ALIAS = "twic";
+
 	// Status codes ------------------------------------------
 	public static final int SUCCESS_CODE = 200;
 	public static final int PGN_EXISTS_CODE = 201;
