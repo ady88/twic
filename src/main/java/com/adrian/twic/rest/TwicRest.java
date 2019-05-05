@@ -1,14 +1,17 @@
 package com.adrian.twic.rest;
 
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.springframework.stereotype.Service;
 
+import com.adrian.twic.services.TwicAppMetadataService;
 import com.adrian.twic.services.TwicPgnEsService;
 import com.adrian.twic.services.TwicPgnZipDownloadService;
 
@@ -24,6 +27,9 @@ public class TwicRest {
 
 	@Inject
 	public TwicPgnEsService esService;
+
+	@Inject
+	public TwicAppMetadataService metadataService;
 
 	@GET
 	@Path("download")
@@ -44,12 +50,30 @@ public class TwicRest {
 		return Response.ok(status.toString()).build();
 	}
 
+	@DELETE
+	@Path("remove/{pgnFileNumber}")
+	@Produces("text/plain")
+	public Response removePgnGames(@PathParam("pgnFileNumber") final int pgnFileNumber) {
+		var status = esService.removePgnGames(pgnFileNumber);
+
+		return Response.ok(status.toString()).build();
+	}
+
 	@GET
 	@Path("index/{pgnFileNumber}")
 	@Produces("text/plain")
-	public Response parsePgn(@PathParam("pgnFileNumber") final int pgnFileNumber) {
+	public Response indexPgn(@PathParam("pgnFileNumber") final int pgnFileNumber) {
 		var status = esService.savePgnGamesFromPgnTwicFile(pgnFileNumber);
 
 		return Response.ok(status.toString()).build();
+	}
+
+	@GET
+	@Path("metadata")
+	@Produces("application/json")
+	public Response getAppMetadata(@PathParam("pgnFileNumber") final int pgnFileNumber) {
+		var appMetadata = metadataService.getTwicAppMetadata().get();
+
+		return Response.ok(appMetadata, MediaType.APPLICATION_JSON).build();
 	}
 }

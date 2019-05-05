@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
@@ -24,6 +25,10 @@ import com.adrian.twic.helpers.ZipHelper;
 @Service
 public final class TwicPgnZipDownloadService {
 
+	private static final String STARTED_DOWNLOAD_MESSAGE = "Started download of all pgn files.";
+
+	private static final String FINISHED_DOWNLOAD_MESSAGE = "Finished download of all pgn files";
+
 	private static final Logger LOG = Logger.getLogger(TwicPgnZipDownloadService.class.getName());
 
 	@Value("${twic.files.basePath}")
@@ -31,6 +36,9 @@ public final class TwicPgnZipDownloadService {
 
 	@Inject
 	private TwicAdapter twicAdapter;
+
+	@Inject
+	private TwicAppMetadataService metadataService;
 
 	/**
 	 * Download specified pgn file from twic.
@@ -80,10 +88,13 @@ public final class TwicPgnZipDownloadService {
 	 * @param pgnFileNumber
 	 * @return status of the pgn file download
 	 */
+	@Scheduled(cron = "0 0/25 * * * *")
 	public OperationStatus downloadTwicAll() {
 		var pgnNumber = TwicConstants.START_PGN_ZIP_COUNTER;
 		var lastSuccessfull = 0;
 		var failNumber = 0;
+
+		LOG.info(STARTED_DOWNLOAD_MESSAGE);
 
 		while (failNumber < TwicConstants.PGN_DOWNLOAD_FAIL_BREAKER) {
 			var status = downloadTwic(pgnNumber);
@@ -95,13 +106,16 @@ public final class TwicPgnZipDownloadService {
 				lastSuccessfull = pgnNumber;
 			}
 
-			LOG.info(status.toString());
+			if (status.getCode() == TwicConstants.SUCCESS_CODE) {
+				LOG.info(status.toString());
+			}
 
 			pgnNumber++;
 		}
 
 		LOG.info("Last successful pgn file download is " + lastSuccessfull);
-
+		metadataService.getTwicAppMetadata().get().setLatestDownloadedPgnFileNumber(lastSuccessfull);
+		LOG.info(FINISHED_DOWNLOAD_MESSAGE);
 		return OperationStatus.of(TwicConstants.SUCCESS_CODE, TwicConstants.SUCCESS_MESSAGE,
 				OperationType.DOWNLOAD_AND_EXTRACT_ZIP_PGN_ALL);
 	}
