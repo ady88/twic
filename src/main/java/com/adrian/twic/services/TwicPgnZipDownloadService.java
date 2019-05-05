@@ -108,7 +108,7 @@ public final class TwicPgnZipDownloadService {
 				lastSuccessfull = pgnNumber;
 			}
 
-			if (status.getCode() == TwicConstants.SUCCESS_CODE) {
+			if (status.getCode() != TwicConstants.PGN_EXISTS_CODE) {
 				LOG.info(status.toString());
 			}
 
