@@ -9,6 +9,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class TwicApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TwicApplication.class, args);
+		SpringApplication.run(TwicApplication.class, args); 
 	}
 }
