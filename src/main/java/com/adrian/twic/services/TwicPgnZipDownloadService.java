@@ -71,6 +71,8 @@ public final class TwicPgnZipDownloadService {
 		try {
 			ZipHelper.unzip(downloadedBytes, pgnFolderPath);
 		} catch (IOException e) {
+			LOG.severe("Unzip operation failed with message: " + e.getMessage());
+
 			return OperationStatus.of(TwicConstants.UNZIP_FAIL_CODE,
 					String.format(TwicConstants.UNZIP_FAIL_MESSAGE, pgnFileNumber),
 					OperationType.DOWNLOAD_AND_EXTRACT_ZIP_PGN);
