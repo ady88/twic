@@ -88,7 +88,7 @@ public final class TwicPgnZipDownloadService {
 	 * @param pgnFileNumber
 	 * @return status of the pgn file download
 	 */
-	@Scheduled(cron = "0 0/25 * * * *")
+	@Scheduled(cron = "0 0/2 * * * *")
 	public OperationStatus downloadTwicAll() {
 		var pgnNumber = TwicConstants.START_PGN_ZIP_COUNTER;
 		var lastSuccessfull = 0;

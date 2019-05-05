@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -jar target/twic.jar --spring.profiles.active=prod $JAR_OPTS
+web: java $JAVA_OPTS -jar target/twic.jar --spring.profiles.active=heroku $JAR_OPTS
