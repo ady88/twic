@@ -1,1 +1,1 @@
-java $JAVA_OPTS -jar target/twic.jar -Dspring.profiles.active=prod -Dserver.port=9091 $JAR_OPTS
+web: java $JAVA_OPTS -jar target/twic.jar -Dspring.profiles.active=prod -Dserver.port=9091 $JAR_OPTS
