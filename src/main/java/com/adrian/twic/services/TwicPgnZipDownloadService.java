@@ -1,13 +1,14 @@
 package com.adrian.twic.services;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.logging.Logger;
+import java.util.zip.ZipInputStream;
 
 import javax.inject.Inject;
 
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,10 @@ import org.springframework.web.client.RestClientException;
 import com.adrian.twic.constants.TwicConstants;
 import com.adrian.twic.domain.OperationStatus;
 import com.adrian.twic.enums.OperationType;
-import com.adrian.twic.helpers.ZipHelper;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageException;
 
 /**
  * Service used to download and unzip pgns from
@@ -25,9 +29,13 @@ import com.adrian.twic.helpers.ZipHelper;
 @Service
 public final class TwicPgnZipDownloadService {
 
+	private static final String COULD_NOT_STORE_ON_THE_CLOUD_MESSAGE = "Could not store twic file number '%s' on the cloud.";
+
 	private static final String STARTED_DOWNLOAD_MESSAGE = "Started download of all pgn files.";
 
 	private static final String FINISHED_DOWNLOAD_MESSAGE = "Finished download of all pgn files";
+
+	private static final int BUFFER_SIZE = 4096;
 
 	private static final Logger LOG = Logger.getLogger(TwicPgnZipDownloadService.class.getName());
 
@@ -38,7 +46,13 @@ public final class TwicPgnZipDownloadService {
 	private TwicAdapter twicAdapter;
 
 	@Inject
+	private Storage cloudStorage;
+
+	@Inject
 	private TwicAppMetadataService metadataService;
+
+	@Value("${google.cloud.storage.bucket.name:twic}")
+	public String bucketName;
 
 	/**
 	 * Download specified pgn file from twic.
@@ -49,10 +63,10 @@ public final class TwicPgnZipDownloadService {
 	public OperationStatus downloadTwic(final int pgnFileNumber) {
 		byte[] downloadedBytes;
 
-		final var pgnFolderPath = basePath + TwicConstants.PGN_FOLDER_NAME;
-		final var path = FilenameUtils.concat(pgnFolderPath, String.format(TwicConstants.PGN_FILE_NAME, pgnFileNumber));
+//		final var pgnFolderPath = basePath + TwicConstants.PGN_FOLDER_NAME;
+//		final var path = FilenameUtils.concat(pgnFolderPath, String.format(TwicConstants.PGN_FILE_NAME, pgnFileNumber));
 
-		if (Files.exists(Paths.get(path))) {
+		if (cloudStorage.get(bucketName, Integer.toString(pgnFileNumber)) != null) {
 			final var fileExistsStatus = OperationStatus.of(TwicConstants.PGN_EXISTS_CODE,
 					String.format(TwicConstants.PGN_EXISTS_MESSAGE, pgnFileNumber),
 					OperationType.DOWNLOAD_AND_EXTRACT_ZIP_PGN);
@@ -69,7 +83,7 @@ public final class TwicPgnZipDownloadService {
 		}
 
 		try {
-			ZipHelper.unzip(downloadedBytes, pgnFolderPath);
+			unzip(downloadedBytes, Integer.toString(pgnFileNumber));
 		} catch (IOException e) {
 			LOG.severe("Unzip operation failed with message: " + e.getMessage());
 
@@ -90,7 +104,7 @@ public final class TwicPgnZipDownloadService {
 	 * @param pgnFileNumber
 	 * @return status of the pgn file download
 	 */
-	@Scheduled(cron = "0 0/2 * * * *")
+	@Scheduled(cron = "0 0/25 * * * *")
 	public OperationStatus downloadTwicAll() {
 		var pgnNumber = TwicConstants.START_PGN_ZIP_COUNTER;
 		var lastSuccessfull = 0;
@@ -120,6 +134,44 @@ public final class TwicPgnZipDownloadService {
 		LOG.info(FINISHED_DOWNLOAD_MESSAGE);
 		return OperationStatus.of(TwicConstants.SUCCESS_CODE, TwicConstants.SUCCESS_MESSAGE,
 				OperationType.DOWNLOAD_AND_EXTRACT_ZIP_PGN_ALL);
+	}
+
+	private void unzip(byte[] data, String pgnFileNumber) throws IOException {
+
+		try (final var zipIn = new ZipInputStream(new ByteArrayInputStream(data))) {
+			var entry = zipIn.getNextEntry();
+
+			while (entry != null) {
+
+				if (!entry.isDirectory()) {
+					// if the entry is a file, extracts it
+					saveToStorage(zipIn, pgnFileNumber);
+				}
+
+				zipIn.closeEntry();
+				entry = zipIn.getNextEntry();
+			}
+		}
+	}
+
+
+	private void saveToStorage(ZipInputStream zipIn, String pgnFileNumber) throws IOException {
+		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+		try (var bos = new BufferedOutputStream(byteArrayOutputStream)) {
+			byte[] bytesIn = new byte[BUFFER_SIZE];
+			var read = 0;
+			while ((read = zipIn.read(bytesIn)) != -1) {
+				bos.write(bytesIn, 0, read);
+			}
+		}
+
+		BlobId blobId = BlobId.of(bucketName, pgnFileNumber);
+		BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("text/plain").build();
+		try {
+			cloudStorage.create(blobInfo, byteArrayOutputStream.toByteArray());
+		} catch (StorageException e) {
+			LOG.severe(String.format(COULD_NOT_STORE_ON_THE_CLOUD_MESSAGE, pgnFileNumber));
+		}
 	}
 
 }

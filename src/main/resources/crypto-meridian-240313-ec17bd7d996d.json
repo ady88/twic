@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "crypto-meridian-240313",
+  "private_key_id": "ec17bd7d996d703a0323317d01de21f197c7751a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCTbb2V3NJ0bfF0\n1ES4WeHYPTn1xsbKtDDcrhD4gzdjiQFk0qhG7tFdcY8nutCxFsE2+IrD++OWtAtB\nhyRTAHwe5jcIUlgchNlOaGmCUoQYWx4vZ15kX7/QgOcWnL1ev4B/Agf9qvgLYNsx\nuO7EgWlZ4/JDZepGAe3fn8m1sMvyE6j9duXuabsY84+MCMto7jfjgr/kd8ap35XO\nou8H2Di1gHB+k0ArUeCGCNZl9KLO5JWXIT8Cvo1OUS0rscBWEf03M3zAKmAVBtqB\nXTQsRZ/Eig8W9iPeu77lkBkbMdHZdtdCl5CjWadXFUclbIEA6XgzEqqKIj5982+M\nLor40MhjAgMBAAECggEAITCZd72I25FMxIJtHhuODoJqI/ymEEhUn7nINEpGE/Bq\nEeqi26U0GRdRpR4XkWaQBPIbO1ffurO5vPzRnqYDS2mEhikTkQgPa+lxp1cwSdNp\njj51L5+mrSf33k1XDJeMNAufBOqSgO1DK4R4rGB9+TCp/6ZYAX65sJhmbrLolwyi\nhBDX2ZZNAqR69bLdG4Ng2DWHcQIeObLLeLswsuBrqv2afvVcq/U3A6dfeZbSg++p\nZxnozMD5dJikSX/aE/bs2CDkrP3VIsoz83fZCfphJcwdmOwEqAErmT59V1EU+Q5L\nBN3o01j+jANt0Qj6dEKDoA2v/3HHGDmkzZnwNfPt8QKBgQDHc6XEYc/O6GoYIXcW\nRUG20KEzfyzE14i4OVspctcxgMUkicA5grq99XWGeLRxTebwmpfq95ufbXuL5/9A\nxYGUmrEe55DkJNvV7C75DTDxdV4mbV2gYCeq8orRD0OMWDt472vl9vBO5+JFbd23\nvFYeQqKGB/U7/pLyIMZU/5u+dwKBgQC9Ojh59q8djgjDEIT1MYvgr6kGMSSR8bFQ\nhp/bRRl74sbuUcKMe6cUzriHQq7bkUNfiJuDm+tDSdepfImXaJHIXzHO6J+OCsL3\nkzS/B0j1PO5JrCuf6lUicp65vDY9RycZ1jnC371TxEpCoyOQggRPT3cd7hq2U1yE\nGHSRc3YkdQKBgExsq+AL+qy1sbF9YTxPXVbHqn0pBeaHEARHNf8z2fFF/kR55AYl\naZjQLTBRoBKqXwtisUN/jUoRkX2Sb+RJydU/UQ8efA5vcS0PSxBzVYWwC1t+HJoP\nPiPqu/ZPevqT9HXqh9WeQYZ6o+EmsAZvTDBcKBpjgjxy16ufk1+OcgcRAoGAVoTh\nP7qv1LaVgQLzl9yAlUob4U3k56n3pdb4Dlyoy0EkLeFKL8t12IiwTIALzS68/FhM\nqr9GsWx44/CiRI02YsRL1Mv98Acxn9s5ucJN9HtYhGzpQWP2axq3QjsxHZGD6kdN\n/7EnMr7EKXXIFBGugMjXsOKmagjxeyBnY/3D3eUCgYA6fr+wCWgItV8VT6dNY7J2\nWCURW1GffWSv/gcmN8eKFJXC4PWNv0H4t/zcbkuBi4bA+h97ibtY1MG/AEN0cY/k\nCec/iIkd5XRKypARo8atV3JpuyGmwK5uWxe5WbC9XAIkGQzlTzkOrNGr/DJJSmCp\nLiG4G7du/E+CEBbR9iqnNA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "twic-service-account@crypto-meridian-240313.iam.gserviceaccount.com",
+  "client_id": "112013687393334481322",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/twic-service-account%40crypto-meridian-240313.iam.gserviceaccount.com"
+}

@@ -73,7 +73,7 @@ public class ESConfig {
 	}
 
 	@EventListener(ApplicationReadyEvent.class)
-	public void setupEsIndex() {
+	public void setupBucket() {
 		boolean aliasExists = false;
 		GetAliasesRequest aliasExistsRequest = new GetAliasesRequest(TwicConstants.TWIC_ALIAS);
 		try {
