@@ -1,13 +1,11 @@
 package com.adrian.twic.services;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.io.FilenameUtils;
+import javax.inject.Inject;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +15,22 @@ import com.adrian.twic.domain.PgnChessGame;
 import com.adrian.twic.domain.PgnChessGameMetadata;
 import com.adrian.twic.enums.OperationType;
 import com.adrian.twic.helpers.PGNMetadataParseHelper;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageException;
 
 @Service
 public final class TwicPgnParseService {
 
+	@Inject
+	private Storage cloudStorage;
+
 	@Value("${twic.files.basePath}")
 	private String basePath;
+
+	@Value("${google.cloud.storage.bucket.name:twic}")
+	public String bucketName;
 
 	/**
 	 * Parse the pgn file with the given number.
@@ -33,24 +41,28 @@ public final class TwicPgnParseService {
 	 */
 	public ParseOperationResult parsePgnFile(final int pgnFileNumber) {
 
-		final var pgnFolderPath = basePath + TwicConstants.PGN_FOLDER_NAME;
-		final var path = FilenameUtils.concat(pgnFolderPath, String.format(TwicConstants.PGN_FILE_NAME, pgnFileNumber));
+		Blob blob = null;
 
-		if (!Files.exists(Paths.get(path))) {
-			return ParseOperationResult.of(TwicConstants.PARSE_FAIL_NO_FILE_CODE,
-					String.format(TwicConstants.PARSE_FAIL_NO_FILE_MESSAGE, pgnFileNumber), OperationType.PARSE_PGN,
-					null);
+		try {
+			blob = cloudStorage.get(BlobId.of(bucketName, Integer.toString(pgnFileNumber)));
+		} catch (StorageException e) {
+			return ParseOperationResult.of(TwicConstants.COULD_NOT_RETRIEVE_FILE_FROM_STORAGE_CODE,
+					String.format(TwicConstants.COULD_NOT_RETRIEVE_FILE_FROM_STORAGE_MESSAGE, pgnFileNumber),
+					OperationType.PARSE_PGN, null);
 		}
+
+		if (blob == null) {
+			return ParseOperationResult.of(TwicConstants.FILE_DOES_NOT_EXIST_IN_STORAGE_CODE,
+					String.format(TwicConstants.FILE_DOES_NOT_EXIST_IN_STORAGE_MESSAGE, pgnFileNumber),
+					OperationType.PARSE_PGN, null);
+		}
+
+		String savedDoc = new String(blob.getContent());
 
 		final List<PgnChessGame> result = new ArrayList<PgnChessGame>();
 
-		try {
-			List<String> tempLines = Files.lines(Paths.get(path)).collect(Collectors.toList());
-			result.addAll(getSeparateGames(tempLines));
-		} catch (IOException e) {
-			return ParseOperationResult.of(TwicConstants.PARSE_FAIL_CODE,
-					String.format(TwicConstants.PARSE_FAIL_MESSAGE, pgnFileNumber), OperationType.PARSE_PGN, null);
-		}
+		List<String> tempLines = savedDoc.lines().collect(Collectors.toList());
+		result.addAll(getSeparateGames(tempLines));
 
 		return ParseOperationResult.of(TwicConstants.SUCCESS_CODE,
 				String.format(TwicConstants.SUCCESS_MESSAGE, pgnFileNumber), OperationType.PARSE_PGN, result);

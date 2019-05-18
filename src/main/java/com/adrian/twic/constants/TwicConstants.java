@@ -4,6 +4,10 @@ package com.adrian.twic.constants;
  * Some constants used by the "twic" services application.
  */
 public class TwicConstants {
+
+	private TwicConstants() {
+	};
+
 	public static final int START_PGN_ZIP_COUNTER = 920;
 
 	// Base URL where the zipped pgn files are located, this url contains a
@@ -34,6 +38,8 @@ public class TwicConstants {
 	public static final int PARSE_FAIL_CODE = 302;
 	public static final int PARSE_FAIL_NO_FILE_CODE = 303;
 	public static final int NO_PGN_FILES_CODE = 304;
+	public static final int COULD_NOT_RETRIEVE_FILE_FROM_STORAGE_CODE = 305;
+	public static final int FILE_DOES_NOT_EXIST_IN_STORAGE_CODE = 306;
 
 	// Status messages ------------------------------------------
 	public static final String SUCCESS_MESSAGE = "OK.";
@@ -43,5 +49,7 @@ public class TwicConstants {
 	public static final String PARSE_FAIL_MESSAGE = "Parse failed for pgn file number %s.";
 	public static final String PARSE_FAIL_NO_FILE_MESSAGE = "Parse failed for pgn file number %s,because the pgn file to parse does not exist.";
 	public static final String NO_PGN_FILES_MESSAGE = "No indexing will happn because no pgn files have been downloaded yet.";
+	public static final String COULD_NOT_RETRIEVE_FILE_FROM_STORAGE_MESSAGE = "Could not retrieve file from storage.";
+	public static final String FILE_DOES_NOT_EXIST_IN_STORAGE_MESSAGE = "Requested file does not exist in storage.";
 
 }
